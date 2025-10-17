@@ -1,0 +1,20 @@
+services:
+  - name: tds-project1-api
+    source:
+      repo: https://github.com/23f3004345/tds-project1
+      branch: main
+    build:
+      command: pip install -r requirements.txt
+    start:
+      command: gunicorn student_api:app --host 0.0.0.0 --port $PORT
+    env:
+      GITHUB_TOKEN: ${{GITHUB_TOKEN}}
+      GITHUB_USERNAME: 23f3004345
+      LLM_PROVIDER: iitm
+      IITM_AI_TOKEN: ${{IITM_AI_TOKEN}}
+      LLM_MODEL: gpt-4-turbo-preview
+      IITM_API_BASE_URL: https://llm.iitm.ac.in/v1
+      STUDENT_SECRET: my-secure-secret-123
+      STUDENT_EMAIL: 23f3004345@ds.study.iitm.ac.in
+      DATABASE_URL: sqlite:///deployment.db
+
