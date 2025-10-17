@@ -1,5 +1,3 @@
-import openai
-import anthropic
 import requests
 import config
 import json
@@ -10,9 +8,11 @@ class LLMGenerator:
     def __init__(self):
         self.provider = config.LLM_PROVIDER
         if self.provider == 'openai':
+            import openai
             openai.api_key = config.OPENAI_API_KEY
             self.model = config.LLM_MODEL
         elif self.provider == 'anthropic':
+            import anthropic
             self.client = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY)
             self.model = 'claude-3-sonnet-20240229'
         elif self.provider == 'iitm':
