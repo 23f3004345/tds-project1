@@ -1,136 +1,45 @@
-# Deployment Guide
+# TDS Project 1 - LLM Code Deployment System
 
-## Cloud Deployment Options
+## Deployment Instructions
 
-### Option 1: Deploy on Railway
+This Flask API is deployed on Render.com and provides automated code generation and GitHub Pages deployment.
 
-1. **Create Railway Account**: https://railway.app
+## Environment Variables Required
 
-2. **Deploy Student API**:
-   ```bash
-   # Install Railway CLI
-   npm i -g @railway/cli
-   
-   # Login
-   railway login
-   
-   # Initialize project
-   railway init
-   
-   # Add environment variables
-   railway variables set GITHUB_TOKEN=your_token
-   railway variables set OPENAI_API_KEY=your_key
-   railway variables set STUDENT_SECRET=your_secret
-   
-   # Deploy
-   railway up
-   ```
+Set these environment variables in your Render.com dashboard:
 
-3. **Get your public URL** from Railway dashboard
-
-### Option 2: Deploy on Render
-
-1. **Create account**: https://render.com
-
-2. **New Web Service**:
-   - Connect your GitHub repo
-   - Build command: `pip install -r requirements.txt && playwright install chromium`
-   - Start command: `python student_api.py`
-
-3. **Add Environment Variables** in Render dashboard
-
-### Option 3: Deploy on Heroku
-
-1. **Create Heroku app**:
-   ```bash
-   heroku create your-app-name
-   ```
-
-2. **Add Procfile**:
-   ```
-   web: python student_api.py
-   ```
-
-3. **Deploy**:
-   ```bash
-   git push heroku main
-   ```
-
-### Option 4: Deploy on Your Own Server
-
-Using systemd on Linux:
-
-1. **Create service file** `/etc/systemd/system/student-api.service`:
-   ```ini
-   [Unit]
-   Description=Student API Service
-   After=network.target
-
-   [Service]
-   Type=simple
-   User=youruser
-   WorkingDirectory=/path/to/project
-   Environment="PATH=/path/to/project/venv/bin"
-   ExecStart=/path/to/project/venv/bin/python student_api.py
-   Restart=always
-
-   [Install]
-   WantedBy=multi-user.target
-   ```
-
-2. **Enable and start**:
-   ```bash
-   sudo systemctl enable student-api
-   sudo systemctl start student-api
-   ```
-
-## Database Setup for Production
-
-### PostgreSQL (Recommended)
-
-1. **Install PostgreSQL** or use a hosted service (ElephantSQL, Supabase, etc.)
-
-2. **Update .env**:
-   ```env
-   DATABASE_URL=postgresql://user:password@host:5432/dbname
-   ```
-
-3. **Initialize**:
-   ```bash
-   python init_db.py
-   ```
-
-## Security Considerations
-
-1. **Never commit .env file** - It's in .gitignore
-2. **Use strong secrets** - Generate with: `python -c "import secrets; print(secrets.token_urlsafe(32))"`
-3. **Rotate GitHub tokens** regularly
-4. **Use HTTPS** in production
-5. **Rate limit** your API endpoints
-6. **Monitor costs** for LLM API usage
-
-## Monitoring
-
-Add logging:
-
-```python
-import logging
-
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('api.log'),
-        logging.StreamHandler()
-    ]
-)
+```
+GITHUB_TOKEN=your_github_token
+GITHUB_USERNAME=23f3004345
+LLM_PROVIDER=iitm
+IITM_AI_TOKEN=your_iitm_token
+LLM_MODEL=gpt-4-turbo-preview
+IITM_API_BASE_URL=https://llm.iitm.ac.in/v1
+STUDENT_SECRET=my-secure-secret-123
+STUDENT_EMAIL=23f3004345@ds.study.iitm.ac.in
+API_PORT=5000
+DATABASE_URL=sqlite:///deployment.db
+REQUEST_TIMEOUT=600
+MAX_RETRIES=5
 ```
 
-## Scaling
+## API Endpoints
 
-For high volume:
-- Use Redis for caching
-- Add task queue (Celery/RQ) for async processing
-- Use CDN for GitHub Pages
-- Implement connection pooling for database
+- `GET /` - API information and documentation
+- `GET /health` - Health check endpoint
+- `POST /api/deploy` - Main deployment endpoint for task requests
+
+## Local Development
+
+```bash
+pip install -r requirements.txt
+python student_api.py
+```
+
+## Production Deployment
+
+This app is configured for deployment on Render.com with:
+- `Procfile` - Defines the web server command
+- `runtime.txt` - Specifies Python version
+- `requirements.txt` - Lists all dependencies
 
